@@ -1,0 +1,90 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class CurrencyConverter 
+{
+
+    private static final Map<String, Double> currencyRates = new HashMap<>();
+
+    static 
+    {
+        currencyRates.put("USD", 1.0);   
+        currencyRates.put("EUR", 0.85); 
+        currencyRates.put("JPY", 110.0); 
+        currencyRates.put("GBP", 0.75);  
+        currencyRates.put("AUD", 1.35);  
+    }
+
+    public static void main(String[] args) 
+    {
+        Scanner scanner = new Scanner(System.in);
+
+        String baseCurrency = getCurrencyInput(scanner, "Enter the base currency (e.g., USD, EUR):");
+
+        String targetCurrency = getCurrencyInput(scanner, "Enter the target currency (e.g., JPY, GBP):");
+
+        double amount = getAmountInput(scanner);
+
+        double convertedAmount = convertCurrency(amount, baseCurrency, targetCurrency);
+
+        displayResult(convertedAmount, targetCurrency);
+
+        scanner.close();
+    }
+
+    private static String getCurrencyInput(Scanner scanner, String prompt) 
+    {
+        String currency;
+        while (true) 
+        {
+            System.out.print(prompt);
+            currency = scanner.nextLine().toUpperCase(); 
+            if (currencyRates.containsKey(currency)) 
+            {
+                return currency;
+            } 
+            else 
+            {
+                System.out.println("Invalid currency. Please try again.");
+            }
+        }
+    }
+
+    private static double getAmountInput(Scanner scanner) 
+    {
+        double amount;
+        while (true) 
+        {
+            System.out.print("Enter the amount you want to convert: ");
+            try 
+            {
+                amount = Double.parseDouble(scanner.nextLine());
+                if (amount >= 0) 
+                {
+                    return amount;
+                } 
+                else 
+                {
+                    System.out.println("Amount must be non-negative. Please try again.");
+                }
+            } 
+            catch (NumberFormatException e) 
+            {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
+        }
+    }
+
+    private static double convertCurrency(double amount, String baseCurrency, String targetCurrency) 
+    {
+        double baseRate = currencyRates.get(baseCurrency);
+        double targetRate = currencyRates.get(targetCurrency);
+        return amount * (targetRate / baseRate);
+    }
+
+    private static void displayResult(double convertedAmount, String targetCurrency) 
+    {
+        System.out.printf("Converted Amount: %.2f %s%n", convertedAmount, targetCurrency);
+    }
+}
